@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accueil Client – Borne Immobilière</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(25,135,84,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    body::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(13,110,253,0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: float 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-50px) translateX(30px); }
+    }
+
+    .kiosk-card {
+      border-radius: 2rem;
+      box-shadow: 0 40px 80px rgba(0,0,0,.3);
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 1;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .step {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #e9ecef;
+      color: #adb5bd;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      z-index: 2;
+    }
+
+    .step.active {
+      background: linear-gradient(135deg, #198754, #20c997);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(25,135,84,0.3);
+      transform: scale(1.1);
+    }
+
+    .step.completed {
+      background: #198754;
+      color: #fff;
+    }
+
+    .step-line {
+      flex: 1;
+      height: 4px;
+      background: #e9ecef;
+      margin: 0 15px;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-line.active {
+      background: #198754;
+    }
+
+    .step-line.active::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+      animation: shimmer 1s ease-in-out;
+    }
+
+    @keyframes shimmer {
+      to { left: 100%; }
+    }
+
+    .tag-btn {
+      border-radius: 50px;
+      font-size: 1.05rem;
+      padding: .7rem 1.6rem;
+      border: 2px solid #dee2e6;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tag-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(25,135,84,0.1);
+      transform: translate(-50%, -50%);
+      transition: width 0.4s, height 0.4s;
+    }
+
+    .tag-btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .tag-btn:hover {
+      border-color: #198754;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .tag-btn.active {
+      background: linear-gradient(135deg, #198754, #20c997);
+      color: #fff;
+      border-color: #198754;
+      box-shadow: 0 5px 20px rgba(25,135,84,0.3);
+      transform: translateY(-2px);
+    }
+
+    .btn-lg {
+      font-size: 1.2rem;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #198754, #20c997);
+      border: none;
+      box-shadow: 0 10px 30px rgba(25,135,84,0.3);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(25,135,84,0.4);
+    }
+
+    .form-control, .form-select {
+      border-radius: 1rem;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+      font-size: 1.05rem;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #198754;
+      box-shadow: 0 0 0 0.25rem rgba(25,135,84,0.15);
+    }
+
+    .property-card {
+      border-radius: 1.5rem;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      border: none;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .property-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+
+    .property-image {
+      height: 200px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .property-image::before {
+      content: '🏠';
+      position: absolute;
+      font-size: 4rem;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.3;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .validation-error {
+      border-color: #dc3545 !important;
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .success-message {
+      background: linear-gradient(135deg, #198754, #20c997);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      text-align: center;
+      animation: slideDown 0.5s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .loading-spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #198754;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .badge-custom {
+      background: rgba(25,135,84,0.1);
+      color: #198754;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin: 0.2rem;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body class="d-flex align-items-center justify-content-center p-3">
+
+<div x-data="kiosk()" class="container-fluid px-3 px-md-5">
+  <div class="kiosk-card bg-white p-4 p-md-5 mx-auto" style="max-width: 1200px;">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+      <h1 class="fw-bold display-5 mb-3" style="color: #2c5364;">
+        Bienvenue 👋
+      </h1>
+      <p class="text-muted fs-5 mb-0">
+        Trouvez votre bien immobilier idéal en quelques étapes
+      </p>
+    </div>
+
+    <!-- STEPPER -->
+    <div class="d-flex align-items-center mb-5 px-md-5">
+      <template x-for="i in 3" :key="i">
+        <div class="d-flex align-items-center flex-fill">
+          <div class="step" 
+               :class="{'active': step === i, 'completed': step > i}" 
+               x-text="i">
+          </div>
+          <div x-show="i < 3" 
+               class="step-line" 
+               :class="step > i && 'active'">
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- STEP 1 : CONTACT -->
+    <div x-show="step === 1" class="fade-in">
+      <h4 class="fw-semibold mb-4 text-center">Vos informations</h4>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Nom et prénom *</label>
+          <input 
+            class="form-control form-control-lg" 
+            placeholder="Ex: Ahmed Ben Ali" 
+            x-model="form.nom"
+            :class="errors.nom && 'validation-error'"
+            @input="errors.nom = false">
+          <small x-show="errors.nom" class="text-danger">Ce champ est obligatoire</small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Téléphone *</label>
+          <input 
+            class="form-control form-control-lg" 
+            placeholder="Ex: +216 12 345 678" 
+            x-model="form.tel"
+            :class="errors.tel && 'validation-error'"
+            @input="errors.tel = false">
+          <small x-show="errors.tel" class="text-danger">Ce champ est obligatoire</small>
+        </div>
+        <div class="col-12">
+          <label class="form-label fw-semibold">Email (optionnel)</label>
+          <input 
+            class="form-control form-control-lg" 
+            type="email"
+            placeholder="Ex: ahmed@example.com" 
+            x-model="form.email">
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 : CRITÈRES -->
+    <div x-show="step === 2" class="fade-in">
+      <h4 class="fw-semibold mb-4 text-center">Vos critères de recherche</h4>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Type de demande *</label>
+          <select 
+            class="form-select form-select-lg" 
+            x-model="form.type"
+            :class="errors.type && 'validation-error'"
+            @change="errors.type = false">
+            <option value="">Sélectionner...</option>
+            <option>Location</option>
+            <option>Achat</option>
+          </select>
+          <small x-show="errors.type" class="text-danger">Ce champ est obligatoire</small>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Budget minimum (TND)</label>
+          <input 
+            class="form-control form-control-lg" 
+            type="number"
+            placeholder="Ex: 500" 
+            x-model="form.min">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold">Budget maximum (TND)</label>
+          <input 
+            class="form-control form-control-lg" 
+            type="number"
+            placeholder="Ex: 1000" 
+            x-model="form.max">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Ville / Quartier *</label>
+          <input 
+            class="form-control form-control-lg" 
+            placeholder="Ex: La Marsa" 
+            x-model="form.ville"
+            :class="errors.ville && 'validation-error'"
+            @input="errors.ville = false">
+          <small x-show="errors.ville" class="text-danger">Ce champ est obligatoire</small>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Type de bien</label>
+          <select class="form-select form-select-lg" x-model="form.propertyType">
+            <option value="">Tous les types</option>
+            <option>Appartement</option>
+            <option>Villa</option>
+            <option>Studio</option>
+            <option>Duplex</option>
+            <option>Bureau</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 : OPTIONS -->
+    <div x-show="step === 3" class="fade-in">
+      <h4 class="fw-semibold mb-4 text-center">Caractéristiques souhaitées</h4>
+      <div class="mb-4 d-flex flex-wrap gap-3 justify-content-center">
+        <template x-for="tag in tags" :key="tag">
+          <button
+            class="btn btn-light tag-btn"
+            :class="form.options.includes(tag) && 'active'"
+            @click="toggle(tag)"
+            x-text="tag">
+          </button>
+        </template>
+      </div>
+
+      <label class="form-label fw-semibold">Commentaires ou précisions</label>
+      <textarea
+        class="form-control form-control-lg"
+        rows="4"
+        placeholder="Décrivez vos besoins spécifiques, préférences, ou toute autre information utile..."
+        x-model="form.note"></textarea>
+    </div>
+
+    <!-- LOADING -->
+    <div x-show="loading" class="text-center my-5">
+      <div class="loading-spinner"></div>
+      <p class="mt-3 text-muted">Recherche des biens correspondants...</p>
+    </div>
+
+    <!-- ACTIONS -->
+    <div x-show="!loading && !submitted" class="d-flex justify-content-between align-items-center mt-5">
+      <button
+        x-show="step > 1"
+        @click="step--"
+        class="btn btn-outline-secondary btn-lg">
+        ← Retour
+      </button>
+
+      <button
+        @click="next()"
+        class="btn btn-success btn-lg px-5 ms-auto">
+        <span x-text="step === 3 ? 'Voir les biens disponibles' : 'Continuer →'"></span>
+      </button>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    <div x-show="submitted && !matches.length" class="success-message mt-4">
+      <h5 class="mb-2">✅ Demande enregistrée avec succès!</h5>
+      <p class="mb-0">Notre équipe vous contactera dans les plus brefs délais.</p>
+    </div>
+
+    <!-- MATCHES -->
+    <div x-show="matches.length" class="mt-5 fade-in">
+      <div class="text-center mb-4">
+        <h3 class="fw-bold mb-2">Biens correspondant à votre recherche</h3>
+        <p class="text-muted" x-text="`${matches.length} bien(s) trouvé(s)`"></p>
+      </div>
+
+      <div class="row g-4">
+        <template x-for="(m, index) in matches" :key="index">
+          <div class="col-md-6 col-lg-4">
+            <div class="card property-card h-100">
+              <div class="property-image" :style="`background: linear-gradient(135deg, ${getGradient(index)})`"></div>
+              <div class="card-body">
+                <h5 class="fw-bold mb-2" x-text="m.titre"></h5>
+                <p class="text-success fw-bold fs-5 mb-2" x-text="m.prix"></p>
+                <p class="text-muted small mb-2" x-text="m.location"></p>
+                <div class="d-flex flex-wrap gap-1">
+                  <template x-for="feature in m.features" :key="feature">
+                    <span class="badge-custom" x-text="feature"></span>
+                  </template>
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-0 pb-3">
+                <button class="btn btn-outline-success w-100 rounded-pill">
+                  Voir les détails
+                </button>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <div class="text-center mt-5">
+        <button @click="reset()" class="btn btn-outline-primary btn-lg rounded-pill px-5">
+          🔄 Nouvelle recherche
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function kiosk() {
+  return {
+    step: 1,
+    loading: false,
+    submitted: false,
+    tags: ['Parking', 'Balcon', 'Ascenseur', 'Vue mer', 'Meublé', 'Climatisation', 'Jardin', 'Piscine'],
+    form: {
+      nom: '',
+      tel: '',
+      email: '',
+      type: '',
+      min: '',
+      max: '',
+      ville: '',
+      propertyType: '',
+      options: [],
+      note: ''
+    },
+    errors: {
+      nom: false,
+      tel: false,
+      type: false,
+      ville: false
+    },
+    matches: [],
+    
+    toggle(tag) {
+      this.form.options.includes(tag)
+        ? this.form.options = this.form.options.filter(t => t !== tag)
+        : this.form.options.push(tag)
+    },
+    
+    validate() {
+      this.errors = {
+        nom: false,
+        tel: false,
+        type: false,
+        ville: false
+      };
+      
+      if (this.step === 1) {
+        if (!this.form.nom.trim()) this.errors.nom = true;
+        if (!this.form.tel.trim()) this.errors.tel = true;
+        return !this.errors.nom && !this.errors.tel;
+      }
+      
+      if (this.step === 2) {
+        if (!this.form.type) this.errors.type = true;
+        if (!this.form.ville.trim()) this.errors.ville = true;
+        return !this.errors.type && !this.errors.ville;
+      }
+      
+      return true;
+    },
+    
+    next() {
+      if (!this.validate()) return;
+      
+      if (this.step < 3) {
+        this.step++;
+        return;
+      }
+      
+      this.loading = true;
+      
+      setTimeout(() => {
+        this.matches = this.generateMatches();
+        this.loading = false;
+        this.submitted = true;
+      }, 1500);
+    },
+    
+    generateMatches() {
+      const properties = [
+        { 
+          titre: 'Appartement S+2 – La Marsa', 
+          prix: '450 TND / mois',
+          location: 'La Marsa, Tunis',
+          features: ['Balcon', 'Parking', 'Vue mer']
+        },
+        { 
+          titre: 'Studio – Centre Ville', 
+          prix: '320 TND / mois',
+          location: 'Centre Ville, Tunis',
+          features: ['Meublé', 'Ascenseur']
+        },
+        { 
+          titre: 'Villa S+4 – Gammarth', 
+          prix: '1200 TND / mois',
+          location: 'Gammarth, Tunis',
+          features: ['Jardin', 'Piscine', 'Parking', 'Vue mer']
+        },
+        { 
+          titre: 'Duplex S+3 – Lac 2', 
+          prix: '850 TND / mois',
+          location: 'Lac 2, Tunis',
+          features: ['Balcon', 'Parking', 'Climatisation']
+        }
+      ];
+      
+      return properties.slice(0, Math.min(4, Math.floor(Math.random() * 3) + 2));
+    },
+    
+    getGradient(index) {
+      const gradients = [
+        '#667eea 0%, #764ba2 100%',
+        '#f093fb 0%, #f5576c 100%',
+        '#4facfe 0%, #00f2fe 100%',
+        '#43e97b 0%, #38f9d7 100%'
+      ];
+      return gradients[index % gradients.length];
+    },
+    
+    reset() {
+      this.step = 1;
+      this.submitted = false;
+      this.matches = [];
+      this.form = {
+        nom: '',
+        tel: '',
+        email: '',
+        type: '',
+        min: '',
+        max: '',
+        ville: '',
+        propertyType: '',
+        options: [],
+        note: ''
+      };
+    }
+  }
+}
+</script>
+
+</body>
+</html>

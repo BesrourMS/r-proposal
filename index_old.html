@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ImmoPro • Premium Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Rich Palette & Gradients */
+      --primary: #6366f1;
+      --secondary: #ec4899;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      --gradient-subtle: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
+      
+      /* Glassmorphism Variables */
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.6);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+      
+      --card-radius: 16px;
+      --transition-speed: 0.3s;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f1f5f9;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    /* --- Premium Sidebar --- */
+    .sidebar {
+      position: fixed; top: 0; bottom: 0; left: 0; z-index: 100;
+      width: 280px; padding: 0; 
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid rgba(255,255,255,0.8);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+    }
+    
+    .brand-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+
+    .sidebar .nav-link {
+      color: #64748b;
+      border-radius: 12px;
+      margin: 0.5rem 1rem;
+      padding: 0.85rem 1rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all var(--transition-speed);
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar .nav-link i { 
+      font-size: 1.2rem; 
+      margin-right: 12px; 
+      transition: transform 0.2s;
+    }
+
+    .sidebar .nav-link:hover {
+      background: #f1f5f9;
+      color: var(--primary);
+      transform: translateX(4px);
+    }
+
+    .sidebar .nav-link:hover i { transform: scale(1.1); }
+
+    .sidebar .nav-link.active {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    /* --- Glass Cards --- */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: var(--glass-border);
+      border-radius: var(--card-radius);
+      box-shadow: var(--glass-shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(31, 38, 135, 0.1);
+      border-color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* --- Stat Cards (Icons) --- */
+    .stat-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .bg-soft-primary { background: #e0e7ff; color: #6366f1; }
+    .bg-soft-success { background: #dcfce7; color: #22c55e; }
+    .bg-soft-warning { background: #fef9c3; color: #ca8a04; }
+    .bg-soft-danger  { background: #fee2e2; color: #ef4444; }
+
+    /* --- Property Cards --- */
+    .property-card {
+      border: none;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      background: white;
+      box-shadow: var(--glass-shadow);
+      transition: all 0.3s ease;
+    }
+
+    .property-img-wrapper {
+      overflow: hidden;
+      height: 220px;
+      position: relative;
+    }
+
+    .property-card img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .property-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .property-card:hover img { transform: scale(1.08); }
+
+    /* --- Buttons & Badges --- */
+    .btn-primary-gradient {
+      background: var(--gradient-primary);
+      border: none;
+      color: white;
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+      transition: all 0.3s;
+    }
+    .btn-primary-gradient:hover {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+      color: white;
+    }
+
+    .badge-gradient {
+      background: var(--gradient-primary);
+      color: white;
+      padding: 0.5em 1em;
+      border-radius: 6px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- Timeline --- */
+    .timeline { border-left: 2px solid #e2e8f0; margin-left: 10px; padding-left: 25px; }
+    .timeline-item { position: relative; margin-bottom: 2rem; }
+    .timeline-dot {
+      position: absolute; left: -36px; top: 0;
+      width: 20px; height: 20px;
+      background: white; border: 4px solid var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+
+    /* --- Layout Tweaks --- */
+    .content { margin-left: 280px; min-height: 100vh; padding: 2rem; }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); transition: transform 0.3s; }
+      .content { margin-left: 0; }
+      .sidebar.show { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="p-4">
+    <div class="d-flex align-items-center mb-5 ps-2">
+      <div class="bg-white rounded-3 shadow-sm p-2 me-3 d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+        <i class="bi bi-building-fill text-primary fs-5"></i>
+      </div>
+      <div>
+        <h4 class="mb-0 brand-gradient">ImmoPro</h4>
+        <small class="text-muted" style="font-size:0.75rem; letter-spacing:1px;">AGENCY MANAGER</small>
+      </div>
+    </div>
+
+    <ul class="nav flex-column">
+      <li class="nav-item"><a href="#dashboard" class="nav-link active"><i class="bi bi-grid-1x2-fill"></i> Tableau de bord</a></li>
+      <li><a href="#clients" class="nav-link"><i class="bi bi-people-fill"></i> Clients & Leads</a></li>
+      <li><a href="#properties" class="nav-link"><i class="bi bi-houses-fill"></i> Portefeuille</a></li>
+      <li><a href="#requests" class="nav-link"><i class="bi bi-stars"></i> Matching IA</a></li>
+      <li><a href="#documents" class="nav-link"><i class="bi bi-file-earmark-richtext-fill"></i> Documents</a></li>
+      <li><a href="#finances" class="nav-link"><i class="bi bi-wallet-fill"></i> Finances</a></li>
+    </ul>
+  </div>
+
+  <div class="p-4 border-top border-light mt-auto">
+    <div class="d-flex align-items-center bg-soft-primary p-3 rounded-3">
+      <img src="https://ui-avatars.com/api/?name=Wassim+Seket&background=6366f1&color=fff" class="rounded-circle me-3 shadow-sm" width="40">
+      <div style="line-height:1.2;">
+        <strong class="text-dark d-block">Wassim</strong>
+        <small class="text-muted">Gérant</small>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="content">
+  <div class="container-fluid">
+
+    <section id="dashboard" class="page active">
+      <div class="d-flex justify-content-between align-items-end mb-5">
+        <div>
+          <h6 class="text-primary fw-bold text-uppercase mb-1">Aperçu journalier</h6>
+          <h1 class="fw-bold mb-0 text-dark">Bonjour, Wassim <span class="fs-2">👋</span></h1>
+        </div>
+        <button class="btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#newClientModal">
+          <i class="bi bi-plus-lg me-2"></i>Nouveau Prospect
+        </button>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <div class="col-md-3">
+          <div class="glass-card p-4 h-100">
+            <div class="stat-icon bg-soft-primary"><i class="bi bi-people"></i></div>
+            <h3 class="fw-bold mb-0">127</h3>
+            <span class="text-muted small">Leads Actifs</span>
+            <span class="badge bg-soft-success text-success ms-2">+12%</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="glass-card p-4 h-100">
+            <div class="stat-icon bg-soft-success"><i class="bi bi-house"></i></div>
+            <h3 class="fw-bold mb-0">94</h3>
+            <span class="text-muted small">Biens en mandat</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="glass-card p-4 h-100">
+            <div class="stat-icon bg-soft-warning"><i class="bi bi-bell"></i></div>
+            <h3 class="fw-bold mb-0">9</h3>
+            <span class="text-muted small">Rappels urgents</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="glass-card p-4 h-100">
+            <div class="stat-icon bg-soft-danger"><i class="bi bi-graph-up-arrow"></i></div>
+            <h3 class="fw-bold mb-0">1,28M</h3>
+            <span class="text-muted small">Dépenses</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="glass-card p-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="fw-bold mb-0">Flux d'entrée agence</h5>
+              <button class="btn btn-sm btn-light rounded-pill px-3">Tout voir</button>
+            </div>
+            
+            <div class="d-flex align-items-center justify-content-between p-3 bg-white rounded-3 shadow-sm mb-3 border border-light">
+              <div class="d-flex align-items-center">
+                <div class="bg-soft-primary rounded-circle p-2 me-3"><i class="bi bi-person text-primary"></i></div>
+                <div>
+                  <h6 class="mb-0 fw-bold">Lucas Bernard</h6>
+                  <span class="small text-muted">Budget 950k • Midoun / Aghir</span>
+                </div>
+              </div>
+              <div class="text-end">
+                <small class="text-muted d-block mb-1">Il y a 5 min</small>
+                <button class="btn btn-sm btn-outline-primary rounded-pill" onclick="showPage('client-detail')">7 Matchs</button>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-between p-3 bg-white rounded-3 shadow-sm mb-3 border border-light opacity-75">
+              <div class="d-flex align-items-center">
+                <div class="bg-light rounded-circle p-2 me-3"><i class="bi bi-person text-muted"></i></div>
+                <div>
+                  <h6 class="mb-0 fw-bold">Sarah Conner</h6>
+                  <span class="small text-muted">Estimation • T3 Djerba 11</span>
+                </div>
+              </div>
+              <div class="text-end">
+                <small class="text-muted d-block mb-1">Il y a 2h</small>
+                <button class="btn btn-sm btn-light text-muted rounded-pill">En attente</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-lg-4">
+          <div class="glass-card p-4 h-100">
+            <h5 class="fw-bold mb-4">Rappels du jour</h5>
+            <div class="list-group list-group-flush">
+              <div class="d-flex justify-content-between align-items-start mb-3 border-bottom pb-3">
+                <div>
+                  <strong class="d-block text-dark">Sophie Martin</strong>
+                  <small class="text-muted">Envoyer compromis de vente</small>
+                </div>
+                <span class="badge bg-danger rounded-pill">Retard</span>
+              </div>
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong class="d-block text-dark">M. Dubois</strong>
+                  <small class="text-muted">Confirmer visite 16h</small>
+                </div>
+                <span class="badge bg-soft-warning text-warning rounded-pill">16:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="clients" class="page" style="display:none;">
+      <h2 class="h4 fw-bold mb-4 brand-gradient d-inline-block">Clients & Prospects</h2>
+      <div class="glass-card p-1 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light"><tr><th class="ps-4">Nom</th><th>Contact</th><th>Budget</th><th>Statut</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="ps-4"><div class="fw-bold">Lucas Bernard</div></td>
+                <td>06 12 34 56 78</td>
+                <td><span class="fw-semibold text-dark">950 k</span></td>
+                <td><span class="badge badge-gradient">CHAUD</span></td>
+                <td><button class="btn btn-sm btn-light rounded-pill border" onclick="showPage('client-detail')">Ouvrir</button></td>
+              </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="properties" class="page" style="display:none;">
+      <div class="d-flex justify-content-between mb-5">
+        <div>
+            <h2 class="h4 fw-bold mb-1">Portefeuille</h2>
+            <p class="text-muted">Gestion des mandats exclusifs et simples</p>
+        </div>
+        <button class="btn btn-primary-gradient"><i class="bi bi-plus-lg"></i> Ajouter un bien</button>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+          <div class="card property-card h-100">
+            <div class="property-img-wrapper">
+                <span class="position-absolute top-0 start-0 m-3 badge badge-gradient z-2">Exclusivité</span>
+                <span class="position-absolute bottom-0 end-0 m-3 badge bg-white text-dark z-2 shadow-sm"><i class="bi bi-geo-alt-fill text-danger"></i> Djerba 16</span>
+                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800" alt="Apartment">
+            </div>
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-1">Haussmannien d'Exception</h5>
+              <p class="text-muted small mb-3">4 pièces • 118 m² • 5ème étage</p>
+              <div class="d-flex justify-content-between align-items-center">
+                  <span class="h5 fw-bold brand-gradient mb-0">1 680 000</span>
+                  <button class="btn btn-sm btn-light rounded-circle" style="width:32px;height:32px;"><i class="bi bi-arrow-right"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card property-card h-100">
+              <div class="property-img-wrapper">
+                  <span class="position-absolute top-0 start-0 m-3 badge bg-dark text-white z-2">Off Market</span>
+                  <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800" alt="Apartment">
+              </div>
+              <div class="card-body p-4">
+                <h5 class="fw-bold mb-1">Loft Industriel</h5>
+                <p class="text-muted small mb-3">3 pièces • 95 m² • RDC</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="h5 fw-bold brand-gradient mb-0">980 000</span>
+                    <button class="btn btn-sm btn-light rounded-circle" style="width:32px;height:32px;"><i class="bi bi-arrow-right"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </section>
+
+    <section id="requests" class="page" style="display:none;">
+      <h2 class="h4 fw-bold mb-4">Demandes actives & Matching</h2>
+      <div class="glass-card p-5 text-center">
+        <i class="bi bi-stars brand-gradient display-1 mb-3"></i>
+        <h3 class="fw-bold">Matching Intelligent</h3>
+        <p class="text-muted">Sélectionnez un client pour voir les biens correspondants en temps réel</p>
+      </div>
+    </section>
+
+    <section id="documents" class="page" style="display:none;">
+      <h2 class="h4 fw-bold mb-4">Centre de Documents</h2>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="glass-card p-4 text-center h-100">
+            <div class="bg-soft-primary rounded-circle d-inline-flex p-3 mb-3">
+                <i class="bi bi-file-earmark-pdf fs-2 text-primary"></i>
+            </div>
+            <h6 class="fw-bold">Mandat de vente</h6>
+            <p class="small text-muted">Modèle standard ALUR</p>
+            <button class="btn btn-outline-primary rounded-pill mt-2">Générer</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="finances" class="page" style="display:none;">
+      <h2 class="h4 fw-bold mb-4">Suivi Financier</h2>
+      <div class="glass-card p-4">
+        <div class="d-flex justify-content-between border-bottom pb-3 mb-3">
+            <h5 class="fw-bold">Appartement Aghir</h5>
+            <span class="badge bg-success rounded-pill" style="line-height: 25px;">Vendu</span>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <small class="text-muted text-uppercase fw-bold">Dépenses Marketing</small>
+            <ul class="list-group list-group-flush mt-2">
+              <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">Reportage photo <span>-850</span></li>
+              <li class="list-group-item bg-transparent px-0 d-flex justify-content-between">Home staging <span>-2 400</span></li>
+            </ul>
+          </div>
+          <div class="col-md-6 text-end">
+            <small class="text-muted text-uppercase fw-bold">Commission Nette</small>
+            <h2 class="brand-gradient mt-2">50 400</h2>
+            <small class="text-success fw-bold">Encaissé le 01/12</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="client-detail" class="page" style="display:none;">
+      <div class="d-flex align-items-center mb-5">
+        <button class="btn btn-white shadow-sm rounded-circle me-3" onclick="showPage('dashboard')" style="width:40px;height:40px;"><i class="bi bi-arrow-left"></i></button>
+        <div>
+            <h2 class="h4 fw-bold mb-0">Lucas Bernard</h2>
+            <span class="text-muted small">ID #P-2025-118 • Créé le 04 Déc</span>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-4">
+          <div class="glass-card p-4 text-center">
+            <div class="position-relative d-inline-block mb-3">
+                <img src="https://ui-avatars.com/api/?name=Lucas+Bernard&background=random" class="rounded-circle shadow-lg" width="100">
+                <span class="position-absolute bottom-0 end-0 p-2 bg-success border border-white rounded-circle"></span>
+            </div>
+            <h5 class="fw-bold">Lucas Bernard</h5>
+            <div class="d-flex justify-content-center gap-2 mb-3">
+                <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-telephone-fill"></i></button>
+                <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-envelope-fill"></i></button>
+            </div>
+            <span class="badge badge-gradient rounded-pill px-3 py-2">Lead très chaud 🔥</span>
+          </div>
+
+          <div class="glass-card p-4 mt-4">
+            <h6 class="fw-bold mb-3">Critères de recherche</h6>
+            <div class="d-flex flex-wrap gap-2">
+                <span class="badge bg-soft-primary text-primary border border-primary-subtle">750k - 950k </span>
+                <span class="badge bg-white text-dark border">100m² min</span>
+                <span class="badge bg-white text-dark border">Midoun</span>
+                <span class="badge bg-white text-dark border">Aghir</span>
+                <span class="badge bg-white text-dark border">4 Pièces</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8">
+          <div class="glass-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="fw-bold mb-0">Biens correspondants (8)</h6>
+                <span class="badge bg-soft-success text-success">IA Matching Actif</span>
+            </div>
+            
+            <div class="card border-0 shadow-sm mb-3 overflow-hidden">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400" class="img-fluid h-100" style="object-fit:cover;">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="fw-bold mb-1">Appartement 5 pièces – Aghir</h6>
+                        <span class="badge bg-success">97% Match</span>
+                    </div>
+                    <p class="small text-muted mb-2">118 m² • 1 680 000</p>
+                    <button class="btn btn-sm btn-primary-gradient mt-2">Envoyer la fiche</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-card p-4 mt-4">
+            <h6 class="fw-bold mb-4">Historique</h6>
+            <div class="timeline">
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="ps-3">
+                    <small class="text-muted">Aujourd'hui 14:12</small>
+                    <p class="mb-0 fw-bold">Entrée en agence (Walk-in)</p>
+                    <p class="small text-muted">Reçu par Wassim</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="modal fade" id="newClientModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow:hidden;">
+      <div class="modal-header border-0 bg-light p-4">
+        <div>
+            <h5 class="modal-title fw-bold">Nouveau Prospect</h5>
+            <p class="text-muted small mb-0">Saisie rapide & Matching instantané</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form class="row g-3">
+          <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-muted">Identité</label>
+              <input type="text" class="form-control form-control-lg bg-light border-0" placeholder="Nom complet">
+          </div>
+          <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-muted">Contact</label>
+              <input type="tel" class="form-control form-control-lg bg-light border-0" placeholder="Téléphone">
+          </div>
+          <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-muted">Budget Min</label>
+              <input type="number" class="form-control bg-light border-0">
+          </div>
+          <div class="col-md-6">
+              <label class="form-label small fw-bold text-uppercase text-muted">Budget Max</label>
+              <input type="number" class="form-control bg-light border-0">
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-bold text-uppercase text-muted">Secteurs</label>
+            <div class="d-flex gap-2 flex-wrap">
+                <input type="checkbox" class="btn-check" id="sec1"><label class="btn btn-outline-primary rounded-pill" for="sec1">Midoun</label>
+                <input type="checkbox" class="btn-check" id="sec2"><label class="btn btn-outline-primary rounded-pill" for="sec2">Djerba 16</label>
+                <input type="checkbox" class="btn-check" id="sec3"><label class="btn btn-outline-primary rounded-pill" for="sec3">Djerba 07</label>
+            </div>
+          </div>
+        </form>
+
+        <div class="mt-4 p-3 rounded-3 bg-soft-primary border border-primary-subtle">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-lightning-charge-fill text-primary fs-4 me-3"></i>
+                <div>
+                    <h6 class="fw-bold mb-0 text-primary">Matching en temps réel</h6>
+                    <small>8 biens correspondent aux critères saisis</small>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light">
+        <button class="btn btn-link text-muted text-decoration-none me-auto" data-bs-dismiss="modal">Annuler</button>
+        <button class="btn btn-primary-gradient px-4">Créer le profil</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Simple Navigation Logic
+  document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = this.getAttribute('href').substring(1);
+      document.querySelectorAll('.page').forEach(p => {
+        p.style.opacity = '0';
+        setTimeout(() => p.style.display = 'none', 300);
+      });
+      document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+      
+      const targetPage = document.getElementById(target);
+      if (targetPage) {
+        setTimeout(() => {
+            targetPage.style.display = 'block';
+            setTimeout(() => targetPage.style.opacity = '1', 50);
+        }, 300);
+      }
+      this.classList.add('active');
+    });
+  });
+
+  // Init Animation
+  document.querySelectorAll('.page').forEach(p => {
+      p.style.transition = 'opacity 0.3s ease';
+      if(p.id !== 'dashboard') p.style.opacity = '0';
+  });
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    const p = document.getElementById(id);
+    p.style.display = 'block';
+    setTimeout(() => p.style.opacity = '1', 50);
+  }
+</script>
+</body>
+</html>
