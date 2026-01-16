@@ -323,7 +323,7 @@
     <div class="d-flex align-items-center mb-5 px-md-5">
       <template x-for="i in 3" :key="i">
         <div class="d-flex align-items-center"
-             :class="{ 'flex-fill': step !== 3 }">
+             :class="{ 'flex-fill': i !== 3 }">
     
           <div class="step"
                :class="{ 'active': step === i, 'completed': step > i }"
