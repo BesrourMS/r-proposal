@@ -322,19 +322,23 @@
     <!-- STEPPER -->
     <div class="d-flex align-items-center mb-5 px-md-5">
       <template x-for="i in 3" :key="i">
-        <div class="d-flex align-items-center flex-fill">
-          <div class="step" 
-               :class="{'active': step === i, 'completed': step > i}" 
+        <div class="d-flex align-items-center"
+             :class="step !== 3 && 'flex-fill'">
+          
+          <div class="step"
+               :class="{'active': step === i, 'completed': step > i}"
                x-text="i">
           </div>
-          <div x-show="i < 3" 
-               class="step-line" 
+    
+          <div x-show="i < 3"
+               class="step-line"
                :class="step > i && 'active'">
           </div>
+    
         </div>
       </template>
     </div>
-
+    
     <!-- STEP 1 : CONTACT -->
     <div x-show="step === 1" class="fade-in">
       <h4 class="fw-semibold mb-4 text-center">Vos informations</h4>
